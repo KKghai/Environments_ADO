@@ -1,0 +1,47 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+# ----
+variables:
+  system.debug: true
+trigger:
+- master
+stages:
+- stage: BuildStage
+  displayName: BuildStageDN
+  jobs:  
+  - job: BuildJob1
+    displayName: BuildJob1DN
+    steps:
+    - script: | 
+        exit 1
+        echo Hello, world !! 
+        echo Replace me with your build steps !!
+      displayName: 'Build task'
+    - powershell: Write-Host "Run unit tests for your application..."        
+      displayName: 'Unit Testing'
+    - task: PublishPipelineArtifact@0
+      displayName: Publish Artifacts
+      inputs:
+        artifactName: drop
+        targetPath: '$(Build.SourcesDirectory)'  
+  - job: BuildJob12
+    displayName: BuildJob2DN
+    steps:
+    - script: | 
+        echo Hello, world2 !!         
+      displayName: 'Build task2'
+- stage: DeployStage
+  displayName: DeployStageDN
+  jobs:
+  - deployment: DeployJob
+    displayName: DeployJobDN
+    pool:
+      vmImage: Ubuntu-16.04
+    environment: staging
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo Hello
